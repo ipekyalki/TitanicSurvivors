@@ -190,3 +190,53 @@ ggplot(data.combined[1:891,], aes(x=family.size, fill = Survived)) +
   ylim(0,300)+
   labs(fill="Survived")
 
+# Take a look at the ticket variable
+str(data.combined$Ticket)
+
+
+# Based on the huge number of levels ticket really isn't a factor variable it is a string. 
+# Convert it and display first 20
+data.combined$Ticket <- as.character(data.combined$Ticket)
+data.combined$Ticket[1:20]
+
+
+# There's no immediately apparent structure in the data, let's see if we can find some.
+# We'll start with taking a look at just the first char for each
+Ticket.first.char <- ifelse(data.combined$Ticket == "", " ", substr(data.combined$Ticket, 1, 1))
+unique(Ticket.first.char)
+
+
+# OK, we can make a factor for analysis purposes and visualize
+data.combined$Ticket.first.char <- as.factor(Ticket.first.char)
+
+# First, a high-level plot of the data
+ggplot(data.combined[1:891,], aes(x = Ticket.first.char, fill = Survived)) +
+  geom_bar() +
+  ggtitle("Survivability by ticket.first.char") +
+  xlab("Ticket.first.char") +
+  ylab("Total Count") +
+  ylim(0,350) +
+  labs(fill = "Survived")
+
+# Ticket seems like it might be predictive, drill down a bit
+ggplot(data.combined[1:891,], aes(x = Ticket.first.char, fill = Survived)) +
+  geom_bar() +
+  facet_wrap(~Pclass) + 
+  ggtitle("Pclass") +
+  xlab("Ticket.first.char") +
+  ylab("Total Count") +
+  ylim(0,300) +
+  labs(fill = "Survived")
+
+# Lastly, see if we get a pattern when using combination of pclass & title
+ggplot(data.combined[1:891,], aes(x = Ticket.first.char, fill = Survived)) +
+  geom_bar() +
+  facet_wrap(~Pclass+Title) + 
+  ggtitle("Pclass, Title") +
+  xlab("Ticket.first.char") +
+  ylab("Total Count") +
+  ylim(0,200) +
+  labs(fill = "Survived")
+
+
+#testestestest
