@@ -240,3 +240,5 @@ ggplot(data.combined[1:891,], aes(x = Ticket.first.char, fill = Survived)) +
 
 
 #testestestest
+
+#another test
