@@ -17,7 +17,6 @@ str(data.combined)
 
 data.combined$Pclass <- as.factor(data.combined$Pclass)
 data.combined$Survived <- as.factor(data.combined$Survived)
-#helloooo
 
 #Take a look at the survival rates
 table(data.combined$Survived)
