@@ -49,6 +49,7 @@ dup.names <- as.character(data.combined[which(duplicated(as.character(data.combi
 data.combined[which(data.combined$Name %in% dup.names),]
 
 #What's up wth Mr. and Miss. thing?
+install.packages("stringr")
 library(stringr)
 
 #Any correlation between the other variables like sibsp or parch?
@@ -237,4 +238,75 @@ ggplot(data.combined[1:891,], aes(x = Ticket.first.char, fill = Survived)) +
   ylim(0,200) +
   labs(fill = "Survived")
 
+# Take a look at fares that passengers paid
+summary(data.combined$Fare)
+length(unique(data.combined$Fare)) #many unique values so we can't make any judgements on this
 
+#so many unique values therefore we can't make fare a factor, treat it as numeric and visualize it with a histogram  
+ggplot(data.combined[1:891,], aes(x = Fare)) +
+  geom_histogram(binwidth = 5) +
+  ggtitle("Combined Fare Distribution") +
+  xlab("Fare") +
+  ylab("Total Count") +
+  ylim(0,200) 
+
+ggplot(data.combined[1:891,], aes(x = Fare, fill = Survived)) +
+  geom_histogram(binwidth = 5) +
+  facet_wrap(~Pclass + title) + 
+  ggtitle("Pclass, title") +
+  xlab("Fare") +
+  ylab("Total Count") +
+  ylim(0,50) +
+  labs(fill = "Survived")
+
+
+#Analyze the cabin variable
+str(data.combined$Cabin)
+
+#Convert it to a character 
+data.combined$Cabin <- as.character(data.combined$Cabin)
+data.combined$Cabin[1:100]
+
+#Replace empty cabins with "U"
+data.combined[which(data.combined$Cabin == ""), "Cabin"] <- "U"
+data.combined$Cabin[1:100]
+
+#Analyze the first char of each cabin
+cabin.first.char <- as.factor(substr(data.combined$Cabin,1,1))
+str(cabin.first.char)
+levels(cabin.first.char)
+
+#add to combined dataset
+data.combined$cabin.first.char <- cabin.first.char
+
+#high level plot
+ggplot(data.combined[1:891,], aes(x = cabin.first.char, fill = Survived)) +
+  geom_bar() +
+  ggtitle("Survivability by cabin.first.char") +
+  xlab("cabin.first.char") +
+  ylab("Total Count") +
+  ylim(0,750) +
+  labs(fill = "Survived")
+
+#look for something predictive
+ggplot(data.combined[1:891,], aes(x = cabin.first.char, fill = Survived)) +
+  geom_bar() +
+  facet_wrap(~Pclass) + 
+  ggtitle("Survivability by cabin.first.char") +
+  xlab("cabin.first.char") +
+  ylab("Total Count") +
+  ylim(0,500) +
+  labs(fill = "Survived")
+
+#dig deeper
+ggplot(data.combined[1:891,], aes(x = cabin.first.char, fill = Survived)) +
+  geom_bar() +
+  facet_wrap(~Pclass + title) + 
+  ggtitle("Survivability by cabin.first.char") +
+  xlab("cabin.first.char") +
+  ylab("Total Count") +
+  ylim(0,350) +
+  labs(fill = "Survived")
+
+#what about folks w/ multiple cabins?
+data.combined$cabin.multiple <- as.factor(ifelse(str_detect(data.combined$Cabin, " "),"Y","N"))
