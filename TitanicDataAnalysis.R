@@ -91,6 +91,8 @@ for (i in 1:nrow(data.combined)){
 }
 data.combined$title <- as.factor(titles)
 data.combined$titles <- NULL #delete the extra "titles" column
+#another way of applying extractTitle fucntion
+#data.combined$title <- sapply(data.combined$Name, extractTitle)
 
 #Since we only have survived labels in the train set, only use first 891 observations
 ggplot(data.combined[1:891,], aes(x=title, fill = Survived)) +
